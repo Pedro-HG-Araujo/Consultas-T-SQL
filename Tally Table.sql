@@ -1,4 +1,4 @@
--- Gerando uma Tally Table de 0 a 999
+-- Gerando uma Tally Table de 0 a 999 com CTE + CROSS JOIN
 
 WITH E1(N) AS (
     SELECT 1 UNION ALL SELECT 1 UNION ALL SELECT 1 UNION ALL SELECT 1 UNION ALL
@@ -9,3 +9,10 @@ E2(N) AS (SELECT 1 FROM E1 a CROSS JOIN E1 b),        -- 100
 E3(N) AS (SELECT 1 FROM E2 a CROSS JOIN E1 b),        -- 1.000
 Tally(N) AS (SELECT ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) - 1 AS N FROM E3)
 SELECT * FROM Tally WHERE N <= 999;
+
+-- Gerando Tally Table com o sys.all_objects 
+WITH Tally(N) AS (
+    SELECT TOP (10000) ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) - 1 AS N
+    FROM sys.all_objects
+)
+SELECT * FROM Tally
